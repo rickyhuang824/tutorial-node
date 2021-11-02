@@ -1,29 +1,23 @@
 const express = require('express');
 const app = express();
-const morgan = require('morgan');
-const logger = require('./logger');
-const authorize = require('./authorize');
 
-// app.use([logger, authorize]);
-// app.use(express.static('./public'));
-// req => middleware => res
-app.use(morgan('tiny'));
-app.get('/', (req, res)=>{
-    res.send('Home');
-})
+let { people } = require('./data');
 
-app.get('/about', (req, res)=>{
-    res.send('About');
+app.use(express.static('./methods-public'));
+app.use(express.urlencoded({ extended: false }));
+
+app.get('/api/people',(req,res)=>{
+    res.status(200).json({data: people, sucess: true});
 });
 
-app.get('/api/products', (req, res)=>{
-    // console.log(req.user);
-    res.send('Products');
+app.post('/login', (req, res) => {
+    const { name } = req.body;
+    if (name) {
+       res.status(200).send(`Welcome ${name}`) ;
+    } else {
+        res.status(401).send('Wrong credential');
+    }
 })
-
-app.get('/api/items', (req, res)=>{
-    res.send('Items');
-});
 
 app.listen(5000, ()=>{
     console.log("Server is listening");
