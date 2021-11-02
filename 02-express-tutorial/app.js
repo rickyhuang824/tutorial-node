@@ -1,8 +1,9 @@
 const express = require('express');
 const app = express();
 const logger = require('./logger');
+const authorize = require('./authorize');
 
-app.use('/api', logger);
+app.use([logger, authorize]);
 // req => middleware => res
 app.get('/', (req, res)=>{
     res.send('Home');
